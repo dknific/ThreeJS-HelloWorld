@@ -8,7 +8,7 @@
     </head>
     <body>
         <h1>A Three.js Demonstration</h1>
-        <p>Check out this canvas below!</p>
+        <p>Check out this HTML5 Canvas below!</p>
 
         <!-- IMPORT Three.js library from CDN: -->
         <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/102/three.js"></script>
@@ -47,9 +47,9 @@
             // Create a new Mesh using your GeometryObj and Material:
             var cubeMesh = new THREE.Mesh(geometry, material);
             cubeMesh.position.z = -1;
+
             // Add the Mesh to the Scene:
             scene.add(cubeMesh);
-            console.log(cubeMesh.position);
 
             // OPTIONAL?: Create, position, and add a point Light:
             var light = new THREE.PointLight(0xFFFFFF, 1, 500);
