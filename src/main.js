@@ -8,8 +8,10 @@ let renderer;
 scene = new THREE.Scene();
 
 // Camera(fieldOfView, aspectRatio, nearPlane, farPlane)
-camera = new THREE.PerspectiveCamera(75, 1, 0.1, 2000);
-camera.position.z = 5;
+camera = new THREE.PerspectiveCamera(60, 1, 0.1, 2000);
+camera.position.z = 6;
+camera.position.y = 1.5;
+camera.rotation.x = -0.25;
 
 // Create a Renderer with antialising:
 renderer = new THREE.WebGLRenderer({ antialias: true });
@@ -32,16 +34,18 @@ document.body.appendChild(renderer.domElement);
 let geometry;
 let material;
 let cubeMesh;
+let cubeOrange = '#ff8f4a';
 
 // BoxGeometry(width, height, depth);
 geometry = new THREE.BoxGeometry(2, 2, 2);
 
 // Define the Material the Mesh will have:
-material = new THREE.MeshLambertMaterial({ color: 'orange' });
+material = new THREE.MeshLambertMaterial({ color: cubeOrange });
 
 // Create a new Mesh using your GeometryObj and Material:
 cubeMesh = new THREE.Mesh(geometry, material);
 cubeMesh.position.z = -1;
+cubeMesh.position.x = -2;
 
 // Add the Mesh to the Scene:
 scene.add(cubeMesh);
@@ -51,7 +55,19 @@ const light = new THREE.PointLight(0xFFFFFF, 1, 500);
 light.position.set(10,0,25);
 scene.add(light);
 
+// Create and add a Cone Mesh:
+let coneGeometry;
+let coneMaterial;
+let coneMesh;
+let coneBlue = '#91bbff';
 
+coneGeometry = new THREE.ConeGeometry(1, 2, 7);
+coneMaterial = new THREE.MeshLambertMaterial({ color: coneBlue });
+coneMesh = new THREE.Mesh(coneGeometry, coneMaterial);
+
+coneMesh.position.z = -1;
+coneMesh.position.x = 2;
+scene.add(coneMesh);
 
 
 
@@ -107,13 +123,20 @@ const render = function() {
     const intersects = raycaster.intersectObjects(scene.children);
 
     if (intersects.length > 0) {
-        cubeMesh.material.color.set('blue');
+        const geometryType = intersects[0].object.geometry.type;
+        if (geometryType === 'ConeGeometry') {
+            coneMesh.material.color.set('#474a48');
+        } else if (geometryType === 'BoxGeometry') {
+            cubeMesh.material.color.set('#96ffb9');
+        }
     } else {
-        cubeMesh.material.color.set('orange');
+        cubeMesh.material.color.set(cubeOrange);
+        coneMesh.material.color.set(coneBlue);
     }
 
     // Make cube rotate:
     cubeMesh.rotation.y += 0.01;
+    coneMesh.rotation.y -= 0.01;
 
     // Render the scene:
     renderer.render(scene, camera);
