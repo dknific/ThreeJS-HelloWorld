@@ -8,7 +8,7 @@
     <body>
         <h1>A Three.js Demonstration</h1>
         <p>Check out this HTML5 Canvas below!</p>
-        <p>Hover over a mesh to change it&apos;s color.</p>
+        <p>Hover over a mesh to change its color.</p>
 
         <!-- IMPORT Three.js library from CDN: -->
         <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/102/three.js"></script>
@@ -18,9 +18,9 @@
 
         <p class="list-header">You can create this same Three.js scene in 4 steps:</p>
         <ol>
-          <li><span>Configure Three.js:</span> Create and configure the Scene object.</li>
-          <li><span>Mesh Creation:</span> Create and Add a new Mesh with Materials to your Scene object.</li>
-          <li><span>Render Loop Creation:</span> Define a JavaScript function that tells our keyframes what to do.</li>
+          <li><span>Configure Three.js:</span> Create and configure the Scene object with a Camera and a Renderer.</li>
+          <li><span>Mesh Creation:</span> Create a new Mesh using a GeometryObject and a Material, then Add it to your scene.</li>
+          <li><span>Make a Render Loop:</span> Define a JavaScript function that tells our app what code to run on every single frame (usually 60 per second).</li>
           <li><span>Call the Render Loop:</span> Call your render() function to start the animation!</li>
         </ol>
     </body>

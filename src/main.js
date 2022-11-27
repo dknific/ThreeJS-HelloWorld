@@ -1,10 +1,11 @@
-// STEP 1: CONFIGURATION:
-// ----------------------
+const cubeOrange = '#ff8f4a';
+const coneBlue = '#91bbff';
+
 let scene;
 let camera;
 let renderer;
 
-// Create a new, empty Scene:
+// Make a new, empty Scene:
 scene = new THREE.Scene();
 
 // Camera(fieldOfView, aspectRatio, nearPlane, farPlane)
@@ -13,66 +14,57 @@ camera.position.z = 6;
 camera.position.y = 1.5;
 camera.rotation.x = -0.25;
 
-// Create a Renderer with antialising:
+// Create a Renderer with Antialising:
 renderer = new THREE.WebGLRenderer({ antialias: true });
 
 // Configure the Renderer's size, clear color, etc:
 renderer.setSize(300, 300);
 renderer.setClearColor("#f2f2f2");
 
-// Append Renderer to DOM:
+// Append Renderer to DOM.
+// Refer to the <canvas> element the renderer is using, with renderer.domElement:
 document.body.appendChild(renderer.domElement);
 
-
-
-
-
-
-// STEP 2: CREATE and ADD a MESH:
-// ----------------------
-// Define a Geometry set for the Mesh first:
-let geometry;
-let material;
+// Now that Three has been configured and appended,
+// Create a Cube Mesh and Add it to the scene:
+let cubeGeometry;
+let cubeMaterial;
 let cubeMesh;
-let cubeOrange = '#ff8f4a';
 
-// BoxGeometry(width, height, depth);
-geometry = new THREE.BoxGeometry(2, 2, 2);
+// Using THREE.BoxGeometry(width, height, depth);
+cubeGeometry = new THREE.BoxGeometry(2, 2, 2);
+cubeMaterial = new THREE.MeshLambertMaterial({ color: cubeOrange });
 
-// Define the Material the Mesh will have:
-material = new THREE.MeshLambertMaterial({ color: cubeOrange });
-
-// Create a new Mesh using your GeometryObj and Material:
-cubeMesh = new THREE.Mesh(geometry, material);
+// Using THREE.Mesh(geometry, material):
+cubeMesh = new THREE.Mesh(cubeGeometry, cubeMaterial);
 cubeMesh.position.z = -1;
 cubeMesh.position.x = -2;
 
-// Add the Mesh to the Scene:
+// Finally, add the Cube Mesh to the Scene:
 scene.add(cubeMesh);
 
-// OPTIONAL: Create, position, and add a point Light:
+// Create a Cone Mesh and Add it:
+let coneGeometry;
+let coneMaterial;
+let coneMesh;
+
+// Using THREE.ConeGeometry(baseRadius, height, radialSegments):
+coneGeometry = new THREE.ConeGeometry(1, 2, 7);
+coneMaterial = new THREE.MeshLambertMaterial({ color: coneBlue });
+
+coneMesh = new THREE.Mesh(coneGeometry, coneMaterial);
+coneMesh.position.z = -1;
+coneMesh.position.x = 2;
+
+scene.add(coneMesh);
+
+// Create a Point Light and position it:
+// Using THREE.PointLight(color, intensity, spread)
 const light = new THREE.PointLight(0xFFFFFF, 1, 500);
 light.position.set(10,0,25);
 scene.add(light);
 
-// Create and add a Cone Mesh:
-let coneGeometry;
-let coneMaterial;
-let coneMesh;
-let coneBlue = '#91bbff';
-
-coneGeometry = new THREE.ConeGeometry(1, 2, 7);
-coneMaterial = new THREE.MeshLambertMaterial({ color: coneBlue });
-coneMesh = new THREE.Mesh(coneGeometry, coneMaterial);
-
-coneMesh.position.z = -1;
-coneMesh.position.x = 2;
-scene.add(coneMesh);
-
-
-
-// STEP 2.1: Tracking the user's mouse with a Raycaster:
-// ----------------------
+// Use Raycaster to track user's mouse movement:
 let raycaster;
 let mouse;
 
@@ -86,7 +78,7 @@ mouse = new THREE.Vector2();
 mouse.x = -1;
 mouse.y = -1;
 
-// Define our mouse updating function which will be an event listener on the canvas:
+// Define a Raycasting function that updates mouse position coords:
 function updateMouseCoordinates(event) {
     event.preventDefault();
 
@@ -103,29 +95,23 @@ function updateMouseCoordinates(event) {
 // Append the function to the Renderer's <canvas> element as a listener:
 renderer.domElement.addEventListener('pointermove', (event) => updateMouseCoordinates(event));
 
-
-
-
-
-
-
-// STEP 3: Create the Render Loop.
-// This function will be called on every single frame:
-// ----------------------
+// Create the Render Loop. This function will be called on every single frame:
 const render = function() {
     // requestAnimationFrame() is basically an advanced setInterval() in Three.js:
     requestAnimationFrame(render);
 
-    // Retrieve and update current mouse position on each frame:
+    // setFromCamera() takes in mouse coords, and the camera to update the ray.
+    // setFromCamera(coordinates of mouse currently, camera):
     raycaster.setFromCamera(mouse, camera);
 
-    // Get an array of objects that the mouse intersects with:
+    // intersectObjects() returns an array of all objects in the casted ray:
     const intersects = raycaster.intersectObjects(scene.children);
 
     if (intersects.length > 0) {
         const geometryType = intersects[0].object.geometry.type;
+
         if (geometryType === 'ConeGeometry') {
-            coneMesh.material.color.set('#474a48');
+            coneMesh.material.color.set('red');
         } else if (geometryType === 'BoxGeometry') {
             cubeMesh.material.color.set('#96ffb9');
         }
@@ -142,12 +128,5 @@ const render = function() {
     renderer.render(scene, camera);
 }
 
-
-
-
-
-
-
-//STEP 4: Call Render Loop!
-// ----------------------
+// Finally, you have to actually call render():
 render();
