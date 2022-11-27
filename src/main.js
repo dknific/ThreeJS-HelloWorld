@@ -125,10 +125,16 @@ const render = function() {
     if (intersects.length > 0) {
         const geometryType = intersects[0].object.geometry.type;
 
-        if (geometryType === 'ConeGeometry') {
-            coneMesh.material.color.set('red');
-        } else if (geometryType === 'BoxGeometry') {
-            cubeMesh.material.color.set('#96ffb9');
+        // If the mouse is over ONLY the plane, do nothing but reset:
+        if (intersects.length === 1 && intersects[0].object.geometry.type === 'PlaneGeometry') {
+            cubeMesh.material.color.set(cubeOrange);
+            coneMesh.material.color.set(coneBlue);
+        } else {
+            if (geometryType === 'ConeGeometry') {
+                coneMesh.material.color.set('red');
+            } else if (geometryType === 'BoxGeometry') {
+                cubeMesh.material.color.set('#96ffb9');
+            }
         }
     } else {
         cubeMesh.material.color.set(cubeOrange);
