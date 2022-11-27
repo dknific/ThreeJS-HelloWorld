@@ -74,7 +74,8 @@ mouse.y = -1;
 function updateMouseCoordinates(event) {
     event.preventDefault();
 
-    // We want the cursor position with respect to the canvas, not the window:
+    // We want the cursor position with respect to the canvas, not the window.
+    // Use renderer.domeElement to access the canvas:
     const boundingBox = renderer.domElement.getBoundingClientRect();
     const x = event.clientX - boundingBox.left;
     const y = event.clientY - boundingBox.top;
@@ -83,7 +84,7 @@ function updateMouseCoordinates(event) {
     mouse.y = - ( y / (boundingBox.bottom - boundingBox.top) ) * 2 + 1;
 }
 
-// Use renderer.domElement to access the Canvas that the Renderer paints to:
+// Append the function to the Renderer's <canvas> element as a listener:
 renderer.domElement.addEventListener('pointermove', (event) => updateMouseCoordinates(event));
 
 
@@ -92,9 +93,11 @@ renderer.domElement.addEventListener('pointermove', (event) => updateMouseCoordi
 
 
 
-// STEP 3: Create the Render Loop:
+// STEP 3: Create the Render Loop.
+// This function will be called on every single frame:
 // ----------------------
 const render = function() {
+    // requestAnimationFrame() is basically an advanced setInterval() in Three.js:
     requestAnimationFrame(render);
 
     // Retrieve and update current mouse position on each frame:
@@ -103,7 +106,7 @@ const render = function() {
     // Get an array of objects that the mouse intersects with:
     const intersects = raycaster.intersectObjects(scene.children);
 
-    if(intersects.length > 0) {
+    if (intersects.length > 0) {
         cubeMesh.material.color.set('blue');
     } else {
         cubeMesh.material.color.set('orange');
