@@ -1,95 +1,71 @@
 const cubeOrange = '#ff8f4a';
 const coneBlue = '#91bbff';
 
-let scene;
-let camera;
-let renderer;
-
-// Make a new, empty Scene:
-scene = new THREE.Scene();
+const scene = new THREE.Scene();
 
 // Docs: Camera(fieldOfView, aspectRatio, nearPlane, farPlane)
-camera = new THREE.PerspectiveCamera(60, 1, 0.1, 2000);
+const camera = new THREE.PerspectiveCamera(60, 1, 0.1, 2000);
 camera.position.z = 6;
 camera.position.y = 1.5;
 camera.rotation.x = -0.25;
 
 // Create a Renderer with Antialising:
-renderer = new THREE.WebGLRenderer({ antialias: true });
-
-// Configure the Renderer's size, clear color, etc:
+const renderer = new THREE.WebGLRenderer({ antialias: true });
 renderer.setSize(300, 300);
 renderer.setClearColor("#f2f2f2");
-
-// Append Renderer to DOM.
-// Refer to the <canvas> element the renderer is using, with renderer.domElement:
+renderer.shadowMap.enabled = true;
+renderer.shadowMap.type = THREE.PCFSoftShadowMap;
 document.body.appendChild(renderer.domElement);
 
-// Now that Three has been configured and appended,
-// Create a Cube Mesh and Add it to the scene:
-let cubeGeometry;
-let cubeMaterial;
-let cubeMesh;
+// Docs: THREE.DirectionalLight(color, intensity)
+const light = new THREE.SpotLight('white', 1);
+light.position.set(-3.2, 4.1, 1.1);
+light.castShadow = true;
+light.shadow.mapSize.width = 1024;
+light.shadow.mapSize.height = 1024;
+light.shadow.camera.near = 0.5;
+light.shadow.camera.far = 100;
+light.target.position.set(-0.25, 0, 0);
+scene.add(light, light.target);
+
+// Docs: THREE.PointLight(color, intensity)
+const pointLight = new THREE.PointLight('white', 0.6);
+pointLight.position.set(-1.5, 4, -4);
+scene.add(pointLight);
 
 // Docs: THREE.BoxGeometry(width, height, depth);
-cubeGeometry = new THREE.BoxGeometry(2, 2, 2);
-cubeMaterial = new THREE.MeshLambertMaterial({ color: cubeOrange });
-
-// Docs: THREE.Mesh(geometry, material):
-cubeMesh = new THREE.Mesh(cubeGeometry, cubeMaterial);
+const cubeGeometry = new THREE.BoxGeometry(2, 2, 2);
+const cubeMaterial = new THREE.MeshLambertMaterial({ color: cubeOrange });
+const cubeMesh = new THREE.Mesh(cubeGeometry, cubeMaterial);
 cubeMesh.position.z = -1;
 cubeMesh.position.x = -2;
-
-// Finally, add the Cube Mesh to the Scene:
+cubeMesh.castShadow = true;
 scene.add(cubeMesh);
 
-// Create a Cone Mesh and Add it:
-let coneGeometry;
-let coneMaterial;
-let coneMesh;
-
 // Docs: THREE.ConeGeometry(baseRadius, height, radialSegments):
-coneGeometry = new THREE.ConeGeometry(1, 2, 7);
-coneMaterial = new THREE.MeshLambertMaterial({ color: coneBlue });
-
-coneMesh = new THREE.Mesh(coneGeometry, coneMaterial);
+const coneGeometry = new THREE.ConeGeometry(1, 2, 7);
+const coneMaterial = new THREE.MeshLambertMaterial({ color: coneBlue });
+const coneMesh = new THREE.Mesh(coneGeometry, coneMaterial);
 coneMesh.position.z = -1;
 coneMesh.position.x = 2;
-
+coneMesh.castShadow = true;
+coneMesh.receiveShadow = true;
 scene.add(coneMesh);
 
-// Create a Plane Mesh and Add it:
-let planeGeometry;
-let planeMaterial;
-let planeMesh;
-
 // Docs: THREE.PlaneGeometry(width, height):
-planeGeometry = new THREE.PlaneGeometry(20, 7);
-planeMaterial = new THREE.MeshBasicMaterial({ color: 'white', side: THREE.DoubleSide });
-
-planeMesh = new THREE.Mesh(planeGeometry, planeMaterial);
-planeMesh.rotation.x = 1.6;
-planeMesh.position.y = -1;
-
-scene.add(planeMesh);
-
-// Create a Point Light and position it:
-// Using THREE.PointLight(color, intensity, spread)
-const light = new THREE.PointLight(0xFFFFFF, 1, 500);
-light.position.set(10,0,25);
-scene.add(light);
-
-// Use Raycaster to track user's mouse movement:
-let raycaster;
-let mouse;
+const planeGeometry = new THREE.PlaneGeometry(20, 7);
+const planeMaterial = new THREE.MeshBasicMaterial({ color: 'white', side: THREE.DoubleSide });
+const ground = new THREE.Mesh(planeGeometry, new THREE.MeshPhongMaterial({ color: 'white' }));
+ground.rotation.x = -Math.PI / 2;
+ground.position.y = -1;
+ground.receiveShadow = true;
+scene.add(ground);
 
 // Use a Raycaster to calculate what objects the mouse is over:
-raycaster = new THREE.Raycaster();
+const raycaster = new THREE.Raycaster();
 
 // Create a 2d Vector that will hold the cursor's x and y:
-mouse = new THREE.Vector2();
-
-// Three.js starts with the cursor defaulted at (0,0,0), so let's move it:
+const mouse = new THREE.Vector2();
 mouse.x = -1;
 mouse.y = -1;
 
@@ -149,5 +125,4 @@ const render = function() {
     renderer.render(scene, camera);
 }
 
-// Finally, you have to actually call render():
 render();
