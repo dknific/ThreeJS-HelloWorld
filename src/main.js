@@ -8,7 +8,7 @@ let renderer;
 // Make a new, empty Scene:
 scene = new THREE.Scene();
 
-// Camera(fieldOfView, aspectRatio, nearPlane, farPlane)
+// Docs: Camera(fieldOfView, aspectRatio, nearPlane, farPlane)
 camera = new THREE.PerspectiveCamera(60, 1, 0.1, 2000);
 camera.position.z = 6;
 camera.position.y = 1.5;
@@ -31,11 +31,11 @@ let cubeGeometry;
 let cubeMaterial;
 let cubeMesh;
 
-// Using THREE.BoxGeometry(width, height, depth);
+// Docs: THREE.BoxGeometry(width, height, depth);
 cubeGeometry = new THREE.BoxGeometry(2, 2, 2);
 cubeMaterial = new THREE.MeshLambertMaterial({ color: cubeOrange });
 
-// Using THREE.Mesh(geometry, material):
+// Docs: THREE.Mesh(geometry, material):
 cubeMesh = new THREE.Mesh(cubeGeometry, cubeMaterial);
 cubeMesh.position.z = -1;
 cubeMesh.position.x = -2;
@@ -48,7 +48,7 @@ let coneGeometry;
 let coneMaterial;
 let coneMesh;
 
-// Using THREE.ConeGeometry(baseRadius, height, radialSegments):
+// Docs: THREE.ConeGeometry(baseRadius, height, radialSegments):
 coneGeometry = new THREE.ConeGeometry(1, 2, 7);
 coneMaterial = new THREE.MeshLambertMaterial({ color: coneBlue });
 
@@ -57,6 +57,21 @@ coneMesh.position.z = -1;
 coneMesh.position.x = 2;
 
 scene.add(coneMesh);
+
+// Create a Plane Mesh and Add it:
+let planeGeometry;
+let planeMaterial;
+let planeMesh;
+
+// Docs: THREE.PlaneGeometry(width, height):
+planeGeometry = new THREE.PlaneGeometry(20, 7);
+planeMaterial = new THREE.MeshBasicMaterial({ color: 'white', side: THREE.DoubleSide });
+
+planeMesh = new THREE.Mesh(planeGeometry, planeMaterial);
+planeMesh.rotation.x = 1.6;
+planeMesh.position.y = -1;
+
+scene.add(planeMesh);
 
 // Create a Point Light and position it:
 // Using THREE.PointLight(color, intensity, spread)
